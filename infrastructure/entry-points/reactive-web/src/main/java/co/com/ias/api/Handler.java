@@ -1,5 +1,6 @@
 package co.com.ias.api;
 
+import co.com.ias.api.entitysDTO.EmployeeDTO;
 import co.com.ias.model.employee.Employee;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,11 +23,10 @@ public class Handler {
                 .collectList()
                 .flatMap(employeesList -> ServerResponse
                         .status(HttpStatus.OK)
-                        .bodyValue(employeesList))
+                        .bodyValue(employeesList)
                 .onErrorResume(exception -> ServerResponse
                         .unprocessableEntity()
-                        .bodyValue(exception.getMessage()));
-        //return ServerResponse.ok().bodyValue("");
+                        .bodyValue(exception.getCause())));
     }
 
     public Mono<ServerResponse> listenGETOtherUseCase(ServerRequest serverRequest) {
@@ -34,8 +34,14 @@ public class Handler {
         return ServerResponse.ok().bodyValue("");
     }
 
-    public Mono<ServerResponse> listenPOSTUseCase(ServerRequest serverRequest) {
-        // usecase.logic();
-        return ServerResponse.ok().bodyValue("");
+    public Mono<ServerResponse> saveUser(ServerRequest serverRequest) {
+        return serverRequest.bodyToMono(EmployeeDTO.class)
+                .flatMap(EmployeeDTO -> employeeUseCase.saveEmployee(EmployeeDTO.toDomain()))
+                .flatMap(userSaved -> ServerResponse
+                        .status(HttpStatus.OK)
+                        .bodyValue(EmployeeDTO.fromDomain(userSaved)))
+                .onErrorResume(exception -> ServerResponse
+                        .unprocessableEntity()
+                        .bodyValue(exception.getMessage()));
     }
 }

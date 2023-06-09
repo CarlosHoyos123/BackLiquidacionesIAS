@@ -18,4 +18,8 @@ public class EmployeeUseCase {
         return employeeRepository.findAll();
     };
 
+    public Mono<Employee> saveEmployee(Employee employee){
+        return employeeRepository.saveEmployee(employee);
+    };
+
 }

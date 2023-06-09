@@ -1,4 +1,4 @@
-package co.com.ias.r2dbc.entitysDTO;
+package co.com.ias.api.entitysDTO;
 
 import co.com.ias.model.employee.Employee;
 
@@ -7,6 +7,21 @@ public class EmployeeDTO {
     private long id ;
     private String name;
     private String lastname;
+
+    public long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public EmployeeDTO() {
+    }
 
     public EmployeeDTO(long id, String name, String lastname) {
         this.id = id;
@@ -18,7 +33,7 @@ public class EmployeeDTO {
         return new Employee(id, name, lastname);
     }
 
-    public EmployeeDTO fromDomain(Employee employee){
+    public static EmployeeDTO fromDomain(Employee employee){
         return new EmployeeDTO(employee.getId(), employee.getName(), employee.getLastname());
     }
 }

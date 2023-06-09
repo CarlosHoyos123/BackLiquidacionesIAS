@@ -16,4 +16,12 @@ public class Employee {
     private String name;
     private String lastname;
 
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", lastname='" + lastname + '\'' +
+                '}';
+    }
 }

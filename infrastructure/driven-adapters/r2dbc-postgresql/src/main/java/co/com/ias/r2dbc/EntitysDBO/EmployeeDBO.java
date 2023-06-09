@@ -2,6 +2,7 @@ package co.com.ias.r2dbc.EntitysDBO;
 
 import co.com.ias.model.employee.Employee;
 import lombok.*;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Table(name = "tblemployees")
@@ -12,6 +13,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @NoArgsConstructor
 public class EmployeeDBO {
 
+    @Id
     private long id ;
     private String name;
     private String lastname;
@@ -26,5 +28,14 @@ public class EmployeeDBO {
                 .name(employee.getName())
                 .lastname(employee.getLastname())
                 .build();
+    }
+
+    @Override
+    public String toString() {
+        return "EmployeeDBO{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", lastname='" + lastname + '\'' +
+                '}';
     }
 }
