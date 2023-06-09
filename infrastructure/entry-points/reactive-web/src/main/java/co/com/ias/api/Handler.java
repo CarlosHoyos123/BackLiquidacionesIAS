@@ -1,19 +1,32 @@
 package co.com.ias.api;
 
+import co.com.ias.model.employee.Employee;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import co.com.ias.usecase.Employee.EmployeeUseCase;
 
 @Component
 @RequiredArgsConstructor
 public class Handler {
-//private  final UseCase useCase;
-//private  final UseCase2 useCase2;
-    public Mono<ServerResponse> listenGETUseCase(ServerRequest serverRequest) {
-        // usecase.logic();
-        return ServerResponse.ok().bodyValue("");
+
+    private  final EmployeeUseCase employeeUseCase;
+
+    public Mono<ServerResponse> getAllEmployees(ServerRequest serverRequest) {
+        Flux<Employee> res = employeeUseCase.findAllEmployees();
+        return res
+                .collectList()
+                .flatMap(employeesList -> ServerResponse
+                        .status(HttpStatus.OK)
+                        .bodyValue(employeesList))
+                .onErrorResume(exception -> ServerResponse
+                        .unprocessableEntity()
+                        .bodyValue(exception.getMessage()));
+        //return ServerResponse.ok().bodyValue("");
     }
 
     public Mono<ServerResponse> listenGETOtherUseCase(ServerRequest serverRequest) {

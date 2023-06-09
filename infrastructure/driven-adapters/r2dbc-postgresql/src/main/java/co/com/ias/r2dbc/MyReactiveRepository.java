@@ -6,6 +6,6 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface MyReactiveRepository extends ReactiveCrudRepository<EmployeeDBO, Long>, ReactiveQueryByExampleExecutor<EmployeeDBO> {
+public interface MyReactiveRepository extends ReactiveCrudRepository<EmployeeDBO, Long>{
 
 }
