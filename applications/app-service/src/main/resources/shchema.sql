@@ -1,12 +1,15 @@
-CREATE TABLE IF NOT EXISTS tblemployees
+CREATE TABLE IF NOT EXISTS tblemployee
 (
-        id Serial,
+        id serial,
+        idnumber varchar,
         name varchar,
-        lastname varchar,
-        PRIMARY KEY (id)
+        indate DATE,
+        cargo varchar,
+        salary float,
+        PRIMARY KEY (idNumber)
 );
-COMMENT ON TABLE tblemployees IS 'Contiene los empleados a los que se les puede aplicar loquidacion';
+COMMENT ON TABLE tblemployee IS 'Contiene los empleados a los que se les puede aplicar loquidacion';
 
 --  ******************** fin DDL **************
 
-insert into tblemployees(name, lastname) values('carlos','hoyos');
+insert into tblemployee(idNumber,name,inDate,cargo,salary) values('1128399593','carlos','2023-01-01','ingeniero',50000);

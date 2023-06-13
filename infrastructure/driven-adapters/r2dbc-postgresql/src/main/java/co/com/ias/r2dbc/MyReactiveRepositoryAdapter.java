@@ -17,6 +17,7 @@ public class MyReactiveRepositoryAdapter implements EmployeeRepository
     private  MyReactiveRepository myReactiveRepository;
     @Override
     public Flux findAll() {
+
         return myReactiveRepository.findAll();
     }
 
