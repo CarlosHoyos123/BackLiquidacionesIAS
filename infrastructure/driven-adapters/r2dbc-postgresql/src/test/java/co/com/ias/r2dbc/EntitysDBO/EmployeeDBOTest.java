@@ -1,6 +1,7 @@
 package co.com.ias.r2dbc.EntitysDBO;
 
 import co.com.ias.model.employee.Employee;
+import co.com.ias.r2dbc.exampleData.ExampleData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -32,12 +33,11 @@ class EmployeeDBOTest{
     }
         @Test
         void toDomain() {
-                EmployeeDBO employeeDBO = new EmployeeDBO(1L,"28435789","Carlos", LocalDate.of(2023,01,01),"ingemiero",20000F);
-                Employee employee = EmployeeDBO.toDomain(employeeDBO);
+                Employee employee = EmployeeDBO.toDomain(ExampleData.crearEmployeeDBO());
         }
         @Test
         void fromDomain() {
-                Employee employee = new Employee(1L,"28435789","Carlos", LocalDate.of(2023,01,01),"ingemiero",20000F);
+                Employee employee = ExampleData.crearEmployee();
                 EmployeeDBO employeeDBO = EmployeeDBO.fromDomain(employee);
         }
 }

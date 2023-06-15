@@ -1,16 +1,46 @@
 package co.com.ias.api.entitysDTO;
 
 import co.com.ias.model.employee.Employee;
+import co.com.ias.model.employee.values.*;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
-public class EmployeeDTO {
+//validaciones con @Valid
+    /*atributo name :     maximo 50 caracteres      *
+                        No caracteres especiales
+                        no vacio                    *
+    atributo documento: maximo 15 digitos           *
+                        minimo 7 digitos            *
+                        no vacio                    *
+    atributo fecha:     YYYY/DD/MM
+                        no superior a 6/jun/2015
+                        no inferior a 1/ene/2015
+                        no vacio                    *
+    atributo cargo:     maximo 30 caracteres        *
+                        minimo 10 caracteres        *
+                        no caracteres especiales
+                        no vacio                    *
+    atributo salario:   no inferior a 1SMMLV        *
+                        no superior a 7 millones    *
+                        no vacio                    * */
 
+public class EmployeeDTO {
     private Long id;
+    @Size(min = 7, max = 15, message = "Documento debe contener entre 7 y 15 digitos")
+    @NotEmpty
     private String idnumber ;
+    @Max(value = 50)
+    @NotEmpty
     private String name;
+    @NotEmpty
     private LocalDate indate;
+    @Size(min = 10, max = 30, message = "Cargo debe contener entre 10 y 30 caracteres")
+    @NotEmpty
     private String cargo;
+    @Max(value = 7000000)
+    @Min(value = 1300606)
+    @NotEmpty
     private Float salary;
 
     public Long getId() {
@@ -50,15 +80,21 @@ public class EmployeeDTO {
     }
 
     public Employee toDomain(){
-        return new Employee( id, idnumber, name, indate, cargo, salary);
+        return new Employee(
+                IdEmployee.builder().value(id).build(),
+                new Idnumber(idnumber),
+                new Name(name),
+                new Indate(indate),
+                new Cargo(cargo),
+                new Salary(salary));
     }
 
     public static EmployeeDTO fromDomain(Employee employee){
-        return new EmployeeDTO( employee.getId(),
-                                employee.getIdnumber(),
-                                employee.getName(),
-                                employee.getIndate(),
-                                employee.getCargo(),
-                                employee.getSalary());
+        return new EmployeeDTO( employee.getId().getValue(),
+                                employee.getIdnumber().getValue(),
+                                employee.getName().getValue(),
+                                employee.getIndate().getValue(),
+                                employee.getCargo().getValue(),
+                                employee.getSalary().getValue());
     }
 }

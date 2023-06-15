@@ -1,10 +1,13 @@
 package co.com.ias.api;
 
 import co.com.ias.api.entitysDTO.EmployeeDTO;
+import co.com.ias.api.exceptions.ExceptionDTO;
 import co.com.ias.model.employee.Employee;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
@@ -18,23 +21,20 @@ public class Handler {
     private  final EmployeeUseCase employeeUseCase;
 
     public Mono<ServerResponse> getAllEmployees(ServerRequest serverRequest) {
+        System.out.println("Entro una peticion getAll");
         Flux<Employee> res = employeeUseCase.findAllEmployees();
         return res
                 .collectList()
                 .flatMap(employeesList -> ServerResponse
                         .status(HttpStatus.OK)
-                        .bodyValue(employeesList)
+                        .bodyValue(employeesList))
                 .onErrorResume(exception -> ServerResponse
                         .unprocessableEntity()
-                        .bodyValue(exception.getCause())));
+                        .bodyValue(new ExceptionDTO(HttpStatus.BAD_REQUEST.value(), exception.getMessage())));
     }
 
-    public Mono<ServerResponse> listenGETOtherUseCase(ServerRequest serverRequest) {
-        // useCase2.logic();
-        return ServerResponse.ok().bodyValue("");
-    }
-
-    public Mono<ServerResponse> saveUser(ServerRequest serverRequest) {
+    public Mono<ServerResponse> saveUser(ServerRequest serverRequest) throws IllegalArgumentException{
+        System.out.println("Entro una peticion save");
         return serverRequest.bodyToMono(EmployeeDTO.class)
                 .flatMap(EmployeeDTO -> employeeUseCase.saveEmployee(EmployeeDTO.toDomain()))
                 .flatMap(userSaved -> ServerResponse
@@ -42,6 +42,7 @@ public class Handler {
                         .bodyValue(EmployeeDTO.fromDomain(userSaved)))
                 .onErrorResume(exception -> ServerResponse
                         .unprocessableEntity()
-                        .bodyValue(exception.getMessage()));
+                        .bodyValue(
+                            new ExceptionDTO(HttpStatus.BAD_REQUEST.value(), exception.getMessage())));
     }
 }
