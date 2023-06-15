@@ -22,7 +22,10 @@ public class Handler {
 
     public Mono<ServerResponse> getAllEmployees(ServerRequest serverRequest) {
         System.out.println("Entro una peticion getAll");
-        Flux<Employee> res = employeeUseCase.findAllEmployees();
+        //Flux<Employee> res = employeeUseCase.findAll(); /*Searchs with NO pagination*/
+        Flux<Employee> res = employeeUseCase.findEmployeesByPage(/*Search with pagination*/
+                Integer.valueOf(serverRequest.pathVariable("size")),
+                Integer.valueOf(serverRequest.pathVariable("page")));
         return res
                 .collectList()
                 .flatMap(employeesList -> ServerResponse
@@ -30,7 +33,7 @@ public class Handler {
                         .bodyValue(employeesList))
                 .onErrorResume(exception -> ServerResponse
                         .unprocessableEntity()
-                        .bodyValue(new ExceptionDTO(HttpStatus.BAD_REQUEST.value(), exception.getMessage())));
+                        .bodyValue(exception.getMessage()));
     }
 
     public Mono<ServerResponse> saveUser(ServerRequest serverRequest) throws IllegalArgumentException{

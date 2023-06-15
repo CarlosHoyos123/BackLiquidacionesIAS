@@ -31,7 +31,7 @@ class MyReactiveRepositoryAdapterTest {
         //given
         Mockito.when(repository.findAll()).thenReturn(ExampleData.crearFluxEmployee());
         //when
-        Flux<EmployeeDBO> resp = adapter.findAll();
+        Flux<Employee> resp = adapter.findAll();
         //then
         assertNotNull(resp);
     }

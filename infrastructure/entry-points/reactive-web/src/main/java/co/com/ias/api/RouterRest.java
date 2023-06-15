@@ -18,7 +18,8 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class RouterRest {
     @Bean
     public RouterFunction<ServerResponse> routerFunction(Handler handler) {
-        return route(GET("/api/users"), handler::getAllEmployees)
+        String param = "/{page}-{size}";
+        return route(GET("/api/users".concat(param)), handler::getAllEmployees)
                 .andRoute(POST("/api/user/create"), handler::saveUser)
                 /*.and(route(GET("/api/otherusercase/path"), handler::listenGETOtherUseCase))*/;
     }

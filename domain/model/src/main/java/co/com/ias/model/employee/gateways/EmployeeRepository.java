@@ -6,7 +6,10 @@ import reactor.core.publisher.Mono;
 
 public interface EmployeeRepository {
 
-    Flux findAll();
+    Flux<Employee> findAll();
+
+    Flux<Employee> findAllByPage(int page, int size);
 
     Mono<Employee> saveEmployee(Employee employee);
+
 }

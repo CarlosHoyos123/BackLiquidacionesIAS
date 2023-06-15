@@ -14,9 +14,14 @@ public class EmployeeUseCase {
 
     private final EmployeeRepository employeeRepository;
 
-    public Flux<Employee> findAllEmployees(){
+    public Flux<Employee> findAll(){  /*Searchs with NO pagination*/
         return employeeRepository.findAll();
     };
+
+    public Flux<Employee> findEmployeesByPage(int page, int size) throws IllegalArgumentException{
+        Flux<Employee> list = employeeRepository.findAllByPage(page, size);
+        return list;
+    }
 
     public Mono<Employee> saveEmployee(Employee employee){
         return employeeRepository.saveEmployee(employee);
