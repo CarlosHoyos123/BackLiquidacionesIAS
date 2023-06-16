@@ -13,7 +13,7 @@ import java.awt.print.Pageable;
 @Repository
 public interface MyReactiveRepository extends ReactiveCrudRepository<EmployeeDBO, Long>, ReactiveSortingRepository<EmployeeDBO, Long> {
 
-    @Query("select * from tblemployee  limit :size offset :page")
-    Flux<EmployeeDBO> findAll(int page, int size);
+    @Query("select * from tblemployee  limit :size offset :DBoffset")
+    Flux<EmployeeDBO> findAll(int DBoffset, int size);
 
 }

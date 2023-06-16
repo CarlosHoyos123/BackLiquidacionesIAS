@@ -19,7 +19,8 @@ public class EmployeeUseCase {
     };
 
     public Flux<Employee> findEmployeesByPage(int page, int size) throws IllegalArgumentException{
-        Flux<Employee> list = employeeRepository.findAllByPage(page, size);
+        int DBoffset = (size * (page-1));
+        Flux<Employee> list = employeeRepository.findAllByPage(DBoffset, size);
         return list;
     }
 

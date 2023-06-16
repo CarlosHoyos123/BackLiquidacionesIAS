@@ -27,8 +27,9 @@ public class MyReactiveRepositoryAdapter implements EmployeeRepository
     }
 
     @Override
-    public Flux findAllByPage(int page, int size) {
-        return myReactiveRepository.findAll(page, size);
+    public Flux findAllByPage(int DBoffset, int size) {
+        System.out.println("*Page: "+DBoffset+"Size: "+size);
+        return myReactiveRepository.findAll(size, DBoffset);
     }
 
 /*    @Override

@@ -24,8 +24,8 @@ public class Handler {
         System.out.println("Entro una peticion getAll");
         //Flux<Employee> res = employeeUseCase.findAll(); /*Searchs with NO pagination*/
         Flux<Employee> res = employeeUseCase.findEmployeesByPage(/*Search with pagination*/
-                Integer.valueOf(serverRequest.pathVariable("size")),
-                Integer.valueOf(serverRequest.pathVariable("page")));
+                Integer.valueOf(serverRequest.pathVariable("page")),
+                Integer.valueOf(serverRequest.pathVariable("size")));
         return res
                 .collectList()
                 .flatMap(employeesList -> ServerResponse
