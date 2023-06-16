@@ -1,5 +1,6 @@
 package co.com.ias.api.entitysDTO;
 
+import co.com.ias.api.exampleData.ExampleData;
 import co.com.ias.model.employee.Employee;
 import org.junit.jupiter.api.Test;
 
@@ -26,13 +27,13 @@ class EmployeeDTOTest {
 
     @Test
     void toDomain() {
-        EmployeeDTO employeeDTO = new EmployeeDTO(1L,"28435789","Carlos", LocalDate.of(2023,01,01),"ingemiero",20000F);
+        EmployeeDTO employeeDTO = ExampleData.crearEmployeeDTO();
         employeeDTO.toDomain();
     }
 
     @Test
     void fromDomain() {
-        Employee employee = new Employee(1L,"28435789","Carlos", LocalDate.of(2023,01,01),"ingemiero",20000F);
+        Employee employee = ExampleData.crearEmployee();
         EmployeeDTO.fromDomain(employee);
     }
 }
