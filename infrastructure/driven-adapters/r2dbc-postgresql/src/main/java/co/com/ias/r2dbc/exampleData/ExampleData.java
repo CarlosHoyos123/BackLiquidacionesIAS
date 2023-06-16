@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ExampleData {
     public static EmployeeDBO crearEmployeeDBO(){
-        return new EmployeeDBO(1L,"28435789","Carlos", LocalDate.of(2023,01,01),"ingeniero",20000F);
+        return new EmployeeDBO(1L,"28435789","Carlos", LocalDate.of(2015,01,05),"ingeniero de software",2000000F);
     }
     /*public static IdEmployee crearValueIdEmploye(){
         return new IdEmployee();
@@ -21,9 +21,9 @@ public class ExampleData {
         return  new Employee(IdEmployee.builder().value(3L).build(),
                 new Idnumber("28435789"),
                 new Name("Carlos"),
-                new Indate(LocalDate.of(2023,01,01)),
-                new Cargo("ingeniero"),
-                new Salary(20000F));
+                new Indate(LocalDate.of(2015,01,05)),
+                new Cargo("ingeniero de software"),
+                new Salary(2000000F));
     }
     public static List<EmployeeDBO> employeeList(){
         return Arrays.asList(crearEmployeeDBO(),crearEmployeeDBO());

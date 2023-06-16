@@ -1,5 +1,6 @@
 package co.com.ias.model.employee;
 
+import co.com.ias.model.employee.exampleData.ExampleData;
 import co.com.ias.model.employee.values.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -12,18 +13,13 @@ class EmployeeTest {
         @Test
     public void crearEmpleado(){
         //given
-        Employee employee = new Employee(IdEmployee.builder().value(1L).build(),
-                new Idnumber("28435789"),
-                new Name("Carlos"),
-                new Indate(LocalDate.of(2023,01,01)),
-                new Cargo("ingemiero"),
-                new Salary(20000F));
+        Employee employee = ExampleData.crearEmployee();
         employee.setId(IdEmployee.builder().value(2L).build());
         employee.setName(new Name("nombre"));
-        employee.setIdnumber(new Idnumber("xxxx"));
-        employee.setIndate(new Indate(LocalDate.of(2023,02,02)));
-        employee.setCargo(new Cargo("cargo"));
-        employee.setSalary(new Salary(10000F));
+        employee.setIdnumber(new Idnumber("xxxxxxxx"));
+        employee.setIndate(new Indate(LocalDate.of(2015,01,02)));
+        employee.setCargo(new Cargo("cargo de mantenimiento"));
+        employee.setSalary(new Salary(3000000F));
         employee.getId();
         employee.getName();
         employee.getIdnumber();
@@ -31,7 +27,6 @@ class EmployeeTest {
         employee.getCargo();
         employee.getSalary();
         //then
-
         employee.toString();
         }
 }

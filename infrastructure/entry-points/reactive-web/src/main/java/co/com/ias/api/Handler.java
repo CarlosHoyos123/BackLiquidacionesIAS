@@ -14,6 +14,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import co.com.ias.usecase.Employee.EmployeeUseCase;
 
+import java.security.PublicKey;
+
 @Component
 @RequiredArgsConstructor
 public class Handler {
@@ -36,7 +38,7 @@ public class Handler {
                         .bodyValue(exception.getMessage()));
     }
 
-    public Mono<ServerResponse> saveUser(ServerRequest serverRequest) throws IllegalArgumentException{
+    public Mono<ServerResponse> saveUser(ServerRequest serverRequest){
         System.out.println("Entro una peticion save");
         return serverRequest.bodyToMono(EmployeeDTO.class)
                 .flatMap(EmployeeDTO -> employeeUseCase.saveEmployee(EmployeeDTO.toDomain()))
@@ -47,5 +49,18 @@ public class Handler {
                         .unprocessableEntity()
                         .bodyValue(
                             new ExceptionDTO(HttpStatus.BAD_REQUEST.value(), exception.getMessage())));
+    }
+
+    public Mono<ServerResponse> updateSalary(ServerRequest serverRequest) {
+        System.out.println("Entro una peticion PUT");
+        return serverRequest.bodyToMono(EmployeeDTO.class)
+                .flatMap(employeeDTO -> employeeUseCase.updateSalary(employeeDTO.toDomain()))
+                .flatMap(employeeSalaryUpdated -> ServerResponse
+                        .status(HttpStatus.ACCEPTED)
+                        .bodyValue(EmployeeDTO.fromDomain(employeeSalaryUpdated)))
+                .onErrorResume(exception -> ServerResponse
+                        .unprocessableEntity()
+                        .bodyValue(
+                                new ExceptionDTO(HttpStatus.NOT_MODIFIED.value(), exception.getMessage())));
     }
 }

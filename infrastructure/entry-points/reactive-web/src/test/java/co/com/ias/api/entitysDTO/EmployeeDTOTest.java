@@ -13,7 +13,7 @@ class EmployeeDTOTest {
     @Test
     public void crearEmpleadoDBO() {
         //given
-        EmployeeDTO employeeDTO = new EmployeeDTO(1L,"28435789","Carlos", LocalDate.of(2023,01,01),"ingemiero",20000F);
+        EmployeeDTO employeeDTO = ExampleData.crearEmployeeDTO();
         //when
         employeeDTO.getId();
         employeeDTO.getName();
@@ -28,12 +28,18 @@ class EmployeeDTOTest {
     @Test
     void toDomain() {
         EmployeeDTO employeeDTO = ExampleData.crearEmployeeDTO();
-        employeeDTO.toDomain();
+        Employee employee = employeeDTO.toDomain();
+    }
+
+    @Test
+    void validationFailure(){
+        assertThrows(IllegalArgumentException.class, ()->
+               ExampleData.invalidEmployeeDTO());
     }
 
     @Test
     void fromDomain() {
         Employee employee = ExampleData.crearEmployee();
-        EmployeeDTO.fromDomain(employee);
+        EmployeeDTO employeeDTO = EmployeeDTO.fromDomain(employee);
     }
 }

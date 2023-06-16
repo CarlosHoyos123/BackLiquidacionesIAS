@@ -28,4 +28,8 @@ public class EmployeeUseCase {
         return employeeRepository.saveEmployee(employee);
     };
 
+    public Mono<Employee> updateSalary(Employee employee){
+        return employeeRepository.updateSalary(employee);
+    }
+
 }

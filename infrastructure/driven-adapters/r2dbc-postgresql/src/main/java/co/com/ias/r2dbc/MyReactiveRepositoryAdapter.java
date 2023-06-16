@@ -28,20 +28,18 @@ public class MyReactiveRepositoryAdapter implements EmployeeRepository
 
     @Override
     public Flux findAllByPage(int DBoffset, int size) {
-        System.out.println("*Page: "+DBoffset+"Size: "+size);
         return myReactiveRepository.findAll(size, DBoffset);
     }
-
-/*    @Override
-    public Flux<Employee> findAllByPage(int page, int size) {
-        System.out.println("Page: "+page+"size: "+size);
-        Flux resp = myReactiveRepository.findAll();
-        return resp;
-    }*/
 
     @Override
     public Mono<Employee> saveEmployee(Employee employee) {
         Mono<EmployeeDBO> res = myReactiveRepository.save(EmployeeDBO.fromDomain(employee) );
+        return res.map(EmployeeDBO::toDomain);
+    }
+
+    @Override
+    public Mono<Employee> updateSalary(Employee employee) {
+        Mono<EmployeeDBO> res = myReactiveRepository.save(EmployeeDBO.fromDomain(employee));
         return res.map(EmployeeDBO::toDomain);
     }
 

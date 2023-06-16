@@ -70,7 +70,7 @@ public class EmployeeDTO {
     public EmployeeDTO() {
     }
 
-    public EmployeeDTO(Long id, String idnumber, String name, LocalDate indate, String cargo, Float salary) {
+    public EmployeeDTO(Long id, String idnumber, String name, LocalDate indate, String cargo, Float salary) throws IllegalArgumentException{
         this.id = id;
         this.idnumber = idnumber;
         this.name = name;

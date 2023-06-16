@@ -12,4 +12,6 @@ public interface EmployeeRepository {
 
     Mono<Employee> saveEmployee(Employee employee);
 
+    Mono<Employee> updateSalary(Employee employee);
+
 }
