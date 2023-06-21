@@ -4,6 +4,8 @@ import co.com.ias.api.entitysDTO.EmployeeDTO;
 import co.com.ias.api.entitysDTO.SettlementDTO;
 import co.com.ias.api.exceptions.ExceptionDTO;
 import co.com.ias.model.employee.Employee;
+import co.com.ias.model.salarylog.SalaryLog;
+import co.com.ias.usecase.salarylog.SalaryLogUseCase;
 import co.com.ias.usecase.settlement.SettlementUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,19 @@ public class Handler {
 
     private final EmployeeUseCase employeeUseCase;
     private final SettlementUseCase settlementUseCase;
+    private final SalaryLogUseCase salaryLogUseCase;
+
+    public Mono<ServerResponse> salarysUpdates(ServerRequest serverRequest) {
+        Flux<SalaryLog> res = salaryLogUseCase.findSalarysUpdates(
+                String.valueOf(serverRequest.pathVariable("id")));
+        return res.collectList().flatMap(salarysList -> ServerResponse
+                                            .status(HttpStatus.OK)
+                                            .bodyValue(salarysList))
+                .onErrorResume(exception -> ServerResponse
+                        .unprocessableEntity()
+                        .bodyValue(
+                                new ExceptionDTO(HttpStatus.NO_CONTENT.value(), exception.getMessage())));
+    }
 
     public Mono<ServerResponse> getAllEmployees(ServerRequest serverRequest) {
         //Flux<Employee> res = employeeUseCase.findAll(); /*Searchs with NO pagination*/
@@ -33,7 +48,8 @@ public class Handler {
                         .bodyValue(employeesList))
                 .onErrorResume(exception -> ServerResponse
                         .unprocessableEntity()
-                        .bodyValue(exception.getMessage()));
+                        .bodyValue(
+                                new ExceptionDTO(HttpStatus.NO_CONTENT.value(), exception.getMessage())));
     }
 
     public Mono<ServerResponse> saveUser(ServerRequest serverRequest){
@@ -71,4 +87,5 @@ public class Handler {
                         .bodyValue(
                                 new ExceptionDTO(HttpStatus.NOT_MODIFIED.value(), exception.getMessage())));
     }
+
 }

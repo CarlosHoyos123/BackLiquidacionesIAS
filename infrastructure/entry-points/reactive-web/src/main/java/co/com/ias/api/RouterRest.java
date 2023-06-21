@@ -18,28 +18,25 @@ public class RouterRest {
     @Bean
     public RouterFunction<ServerResponse> routerFunction(Handler handler) {
         String param = "/{page}-{size}";
+        String paramid = "/{id}";
         return route(GET("/api/users".concat(param)), handler::getAllEmployees)
                 .andRoute(POST("/api/user/create"), handler::saveUser)
                 .andRoute(PUT("/api/user/salaryUpdate"), handler::updateSalary)
-                .andRoute(POST("/api/user/settlement"), handler::getSettlement);
+                .andRoute(POST("/api/user/settlement"), handler::getSettlement)
+                .andRoute(GET("/api/user/salaryUpdates".concat(paramid)),handler::salarysUpdates);
     }
 
     @Bean
     CorsWebFilter corsFilter() {
-
         CorsConfiguration config = new CorsConfiguration();
-
         // Possibly...
         // config.applyPermitDefaultValues()
-
         config.setAllowCredentials(true);
         config.addAllowedOrigin("http://localhost:4200");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
-
         return new CorsWebFilter(source);
     }
 }

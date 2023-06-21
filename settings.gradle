@@ -20,3 +20,5 @@ include ':r2dbc-postgresql'
 project(':r2dbc-postgresql').projectDir = file('./infrastructure/driven-adapters/r2dbc-postgresql')
 include ':[-data-for-mocks]'
 project(':[-data-for-mocks]').projectDir = file('./infrastructure/helpers/[-data-for-mocks]')
+include ':salary-adapter'
+project(':salary-adapter').projectDir = file('./infrastructure/helpers/salary-adapter')

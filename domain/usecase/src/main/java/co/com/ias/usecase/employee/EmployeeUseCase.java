@@ -2,6 +2,8 @@ package co.com.ias.usecase.employee;
 
 import co.com.ias.model.employee.Employee;
 import co.com.ias.model.employee.gateways.EmployeeRepository;
+import co.com.ias.model.salarylog.SalaryLog;
+import co.com.ias.model.salarylog.gateways.SalaryLogRepository;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -32,6 +34,4 @@ public class EmployeeUseCase {
     public Mono<Employee> updateSalary(Employee employee){
         return employeeRepository.updateSalary(employee);
     }
-
-
 }
