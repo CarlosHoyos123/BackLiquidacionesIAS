@@ -28,9 +28,18 @@ public class MyReactiveRepositoryAdapter implements EmployeeRepository, SalaryLo
     }
 
     @Override
+    public Flux findByName(String name) {
+        return myReactiveRepository.findByName(name);
+    }
+
+    @Override
+    public Mono<Employee> findByDocument(String document) {
+        return myReactiveRepository.findByDocument(document).map(EmployeeDBO::toDomain);
+    }
+
+    @Override
     public Mono<Employee> findByIdnumber(String id) {
-        Mono<EmployeeDBO> res = myReactiveRepository.findByIdnumber(id);
-        return res.map(EmployeeDBO::toDomain);
+        return  myReactiveRepository.findByIdnumber(id).map(EmployeeDBO::toDomain);
     }
 
     @Override

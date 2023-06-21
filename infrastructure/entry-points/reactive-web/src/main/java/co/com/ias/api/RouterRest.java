@@ -19,11 +19,15 @@ public class RouterRest {
     public RouterFunction<ServerResponse> routerFunction(Handler handler) {
         String param = "/{page}-{size}";
         String paramid = "/{id}";
-        return route(GET("/api/users".concat(param)), handler::getAllEmployees)
+        String paramdoc = "/{document}";
+        String paramName = "/{name}";
+        return route(GET("/api/users".concat(param)), handler::getEmployeesPage)
                 .andRoute(POST("/api/user/create"), handler::saveUser)
                 .andRoute(PUT("/api/user/salaryUpdate"), handler::updateSalary)
                 .andRoute(POST("/api/user/settlement"), handler::getSettlement)
-                .andRoute(GET("/api/user/salaryUpdates".concat(paramid)),handler::salarysUpdates);
+                .andRoute(GET("/api/user/salaryUpdates".concat(paramid)),handler::salarysUpdates)
+                .andRoute(GET("/api/users".concat(paramName)),handler::getEmployeeByName)
+                .andRoute(GET("/api/user".concat(paramdoc)),handler::getEmployeesByDoc);
     }
 
     @Bean

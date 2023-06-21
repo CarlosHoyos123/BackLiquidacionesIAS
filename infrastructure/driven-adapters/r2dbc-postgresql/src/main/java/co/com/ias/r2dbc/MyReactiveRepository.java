@@ -1,5 +1,6 @@
 package co.com.ias.r2dbc;
 
+import co.com.ias.model.employee.Employee;
 import co.com.ias.r2dbc.EntitysDBO.EmployeeDBO;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.ReactiveQueryByExampleExecutor;
@@ -17,8 +18,12 @@ public interface MyReactiveRepository extends ReactiveCrudRepository<EmployeeDBO
     @Query("select * from tblemployee  limit :size offset :DBoffset")
     Flux<EmployeeDBO> findAll(int DBoffset, int size);
 
-
     @Query("select * from tblemployee  where idnumber = :id")
     Mono<EmployeeDBO> findByIdnumber(String id);
+
+    @Query("select * from tblemployee t where name = :name")
+    Flux<EmployeeDBO> findByName(String name);
+    @Query("select * from tblemployee t where idnumber = :document")
+    Mono<EmployeeDBO> findByDocument(String document);
 
 }

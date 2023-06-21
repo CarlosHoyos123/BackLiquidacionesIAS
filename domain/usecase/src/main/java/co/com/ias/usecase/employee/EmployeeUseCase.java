@@ -27,6 +27,18 @@ public class EmployeeUseCase {
         return list;
     }
 
+    public Flux<Employee> findEmployeeByName(String name){
+        System.out.println(name);
+      return employeeRepository.findByName(name);
+    }
+
+    public Mono<Employee> findEmployeeByDocument(String document){
+        System.out.println(document);
+        return employeeRepository.findByDocument(document);
+    }
+
+
+
     public Mono<Employee> saveEmployee(Employee employee){
         return employeeRepository.saveEmployee(employee);
     };

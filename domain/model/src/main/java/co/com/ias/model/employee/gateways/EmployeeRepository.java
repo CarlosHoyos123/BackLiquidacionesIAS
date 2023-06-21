@@ -10,6 +10,10 @@ public interface EmployeeRepository {
 
     Mono<Employee> findByIdnumber(String id);
 
+    Flux<Employee> findByName(String name);
+
+    Mono<Employee> findByDocument(String document);
+
     Flux<Employee> findAllByPage(int DBoffset, int size);
 
     Mono<Employee> saveEmployee(Employee employee);

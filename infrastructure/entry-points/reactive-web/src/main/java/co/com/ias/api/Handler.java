@@ -36,7 +36,7 @@ public class Handler {
                                 new ExceptionDTO(HttpStatus.NO_CONTENT.value(), exception.getMessage())));
     }
 
-    public Mono<ServerResponse> getAllEmployees(ServerRequest serverRequest) {
+    public Mono<ServerResponse> getEmployeesPage(ServerRequest serverRequest) {
         //Flux<Employee> res = employeeUseCase.findAll(); /*Searchs with NO pagination*/
         Flux<Employee> res = employeeUseCase.findEmployeesByPage(/*Search with pagination*/
                 Integer.valueOf(serverRequest.pathVariable("page")),
@@ -51,6 +51,31 @@ public class Handler {
                         .bodyValue(
                                 new ExceptionDTO(HttpStatus.NO_CONTENT.value(), exception.getMessage())));
     }
+
+    public Mono<ServerResponse> getEmployeeByName(ServerRequest serverRequest) {
+        Flux<Employee> res = employeeUseCase.findEmployeeByName(
+                serverRequest.pathVariable("name"));
+        return res.collectList().flatMap(employeeList -> ServerResponse
+                        .status(HttpStatus.OK)
+                        .bodyValue(employeeList))
+                .onErrorResume(exception -> ServerResponse
+                        .unprocessableEntity()
+                        .bodyValue(
+                                new ExceptionDTO(HttpStatus.NO_CONTENT.value(), exception.getMessage())));
+    }
+
+    public Mono<ServerResponse> getEmployeesByDoc(ServerRequest serverRequest) {
+        Mono<Employee> res = employeeUseCase.findEmployeeByDocument(
+                serverRequest.pathVariable("document"));
+        return res.flatMap(employee -> ServerResponse
+                    .status(HttpStatus.OK)
+                    .bodyValue(EmployeeDTO.fromDomain(employee)))
+                .onErrorResume(exception -> ServerResponse
+                        .status(HttpStatus.OK)
+                        .bodyValue(
+                                new ExceptionDTO(HttpStatus.NO_CONTENT.value(), exception.getMessage())));
+    }
+
 
     public Mono<ServerResponse> saveUser(ServerRequest serverRequest){
         return serverRequest.bodyToMono(EmployeeDTO.class)
