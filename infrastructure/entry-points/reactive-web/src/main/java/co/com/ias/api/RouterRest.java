@@ -20,7 +20,8 @@ public class RouterRest {
         String param = "/{page}-{size}";
         return route(GET("/api/users".concat(param)), handler::getAllEmployees)
                 .andRoute(POST("/api/user/create"), handler::saveUser)
-                .andRoute(PUT("/api/user/salaryUpdate"), handler::updateSalary);
+                .andRoute(PUT("/api/user/salaryUpdate"), handler::updateSalary)
+                .andRoute(POST("/api/user/settlement"), handler::getSettlement);
     }
 
     @Bean

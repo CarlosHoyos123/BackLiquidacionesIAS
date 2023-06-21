@@ -81,7 +81,7 @@ public class EmployeeDTO {
 
     public Employee toDomain(){
         return new Employee(
-                IdEmployee.builder().value(id).build(),
+                new IdEmployee(id),
                 new Idnumber(idnumber),
                 new Name(name),
                 new Indate(indate),

@@ -1,17 +1,14 @@
 package co.com.ias.model.employee;
 import co.com.ias.model.employee.values.*;
-import lombok.Builder;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.*;
 //import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Getter
 @Setter
-//@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder(toBuilder = true)
 public class Employee {
 
@@ -21,6 +18,7 @@ public class Employee {
     private Indate indate;
     private Cargo cargo;
     private Salary salary;
+
 
     @Override
     public String toString() {

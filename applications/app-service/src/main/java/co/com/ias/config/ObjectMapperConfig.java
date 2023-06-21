@@ -1,7 +1,7 @@
 package co.com.ias.config;
 
 import co.com.ias.model.employee.gateways.EmployeeRepository;
-import co.com.ias.usecase.Employee.EmployeeUseCase;
+import co.com.ias.usecase.employee.EmployeeUseCase;
 import org.reactivecommons.utils.ObjectMapper;
 import org.reactivecommons.utils.ObjectMapperImp;
 import org.springframework.context.annotation.Bean;

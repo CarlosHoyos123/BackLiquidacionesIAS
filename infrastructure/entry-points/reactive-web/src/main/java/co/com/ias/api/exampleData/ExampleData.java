@@ -19,12 +19,13 @@ public class ExampleData {
         return new EmployeeDTO(1L,"28435789","Carlos", LocalDate.of(2016,01,10),"ingeniero de spoftware",2000000F);
     }
     public static Employee crearEmployee(){
-        return  new Employee(IdEmployee.builder().value(3L).build(),
-                new Idnumber("28435789"),
-                new Name("Carlos"),
-                new Indate(LocalDate.of(2015,01,02)),
-                new Cargo("ingeniero de software"),
-                new Salary(2000000F));
+        return  new Employee(
+                    new IdEmployee(3L),
+                    new Idnumber("28435789"),
+                    new Name("Carlos"),
+                    new Indate(LocalDate.of(2015,01,02)),
+                    new Cargo("ingeniero de software"),
+                    new Salary(2000000F));
     }
     public static List<EmployeeDTO> employeeList(){
         return Arrays.asList(crearEmployeeDTO(),crearEmployeeDTO());

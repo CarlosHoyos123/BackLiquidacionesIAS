@@ -26,7 +26,7 @@ public class EmployeeDBO {
 
     public static Employee toDomain(EmployeeDBO employeeDBO){
         return new Employee(
-                IdEmployee.builder().value(EmployeeDBO.builder().id).build(),
+                new IdEmployee(employeeDBO.id),
                 new Idnumber(employeeDBO.idnumber),
                 new Name(employeeDBO.name),
                 new Indate(employeeDBO.indate),

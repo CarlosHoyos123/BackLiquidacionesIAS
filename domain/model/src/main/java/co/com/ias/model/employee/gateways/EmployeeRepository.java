@@ -8,6 +8,8 @@ public interface EmployeeRepository {
 
     Flux<Employee> findAll();
 
+    Mono<Employee> findByIdnumber(String id);
+
     Flux<Employee> findAllByPage(int DBoffset, int size);
 
     Mono<Employee> saveEmployee(Employee employee);

@@ -1,13 +1,10 @@
-package co.com.ias.usecase.Employee;
+package co.com.ias.usecase.employee;
 
 import co.com.ias.model.employee.Employee;
 import co.com.ias.model.employee.gateways.EmployeeRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 public class EmployeeUseCase {
@@ -17,6 +14,10 @@ public class EmployeeUseCase {
     public Flux<Employee> findAll(){  /*Searchs with NO pagination*/
         return employeeRepository.findAll();
     };
+
+    public Mono<Employee> findEmployee(String id){
+        return  employeeRepository.findByIdnumber(id);
+    }
 
     public Flux<Employee> findEmployeesByPage(int page, int size) throws IllegalArgumentException{
         int DBoffset = (size * (page-1));
@@ -31,5 +32,6 @@ public class EmployeeUseCase {
     public Mono<Employee> updateSalary(Employee employee){
         return employeeRepository.updateSalary(employee);
     }
+
 
 }

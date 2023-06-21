@@ -10,11 +10,11 @@ import java.time.LocalDate;
 
 class EmployeeTest {
 
-        @Test
+    @Test
     public void crearEmpleado(){
         //given
         Employee employee = ExampleData.crearEmployee();
-        employee.setId(IdEmployee.builder().value(2L).build());
+        employee.setId(new IdEmployee(2L));
         employee.setName(new Name("nombre"));
         employee.setIdnumber(new Idnumber("xxxxxxxx"));
         employee.setIndate(new Indate(LocalDate.of(2015,01,02)));

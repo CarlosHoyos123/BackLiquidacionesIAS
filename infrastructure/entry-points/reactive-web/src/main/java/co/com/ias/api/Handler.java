@@ -1,29 +1,27 @@
 package co.com.ias.api;
 
 import co.com.ias.api.entitysDTO.EmployeeDTO;
+import co.com.ias.api.entitysDTO.SettlementDTO;
 import co.com.ias.api.exceptions.ExceptionDTO;
 import co.com.ias.model.employee.Employee;
-import jakarta.validation.Valid;
+import co.com.ias.usecase.settlement.SettlementUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import co.com.ias.usecase.Employee.EmployeeUseCase;
-
-import java.security.PublicKey;
+import co.com.ias.usecase.employee.EmployeeUseCase;
 
 @Component
 @RequiredArgsConstructor
 public class Handler {
 
-    private  final EmployeeUseCase employeeUseCase;
+    private final EmployeeUseCase employeeUseCase;
+    private final SettlementUseCase settlementUseCase;
 
     public Mono<ServerResponse> getAllEmployees(ServerRequest serverRequest) {
-        System.out.println("Entro una peticion getAll");
         //Flux<Employee> res = employeeUseCase.findAll(); /*Searchs with NO pagination*/
         Flux<Employee> res = employeeUseCase.findEmployeesByPage(/*Search with pagination*/
                 Integer.valueOf(serverRequest.pathVariable("page")),
@@ -39,7 +37,6 @@ public class Handler {
     }
 
     public Mono<ServerResponse> saveUser(ServerRequest serverRequest){
-        System.out.println("Entro una peticion save");
         return serverRequest.bodyToMono(EmployeeDTO.class)
                 .flatMap(EmployeeDTO -> employeeUseCase.saveEmployee(EmployeeDTO.toDomain()))
                 .flatMap(userSaved -> ServerResponse
@@ -52,12 +49,23 @@ public class Handler {
     }
 
     public Mono<ServerResponse> updateSalary(ServerRequest serverRequest) {
-        System.out.println("Entro una peticion PUT");
         return serverRequest.bodyToMono(EmployeeDTO.class)
                 .flatMap(employeeDTO -> employeeUseCase.updateSalary(employeeDTO.toDomain()))
                 .flatMap(employeeSalaryUpdated -> ServerResponse
                         .status(HttpStatus.ACCEPTED)
                         .bodyValue(EmployeeDTO.fromDomain(employeeSalaryUpdated)))
+                .onErrorResume(exception -> ServerResponse
+                        .unprocessableEntity()
+                        .bodyValue(
+                                new ExceptionDTO(HttpStatus.NOT_MODIFIED.value(), exception.getMessage())));
+    }
+
+    public Mono<ServerResponse> getSettlement(ServerRequest serverRequest){
+        return serverRequest.bodyToMono(SettlementDTO.class)
+                .flatMap(settlement -> settlementUseCase.MadeSettlement(settlement.toDomain()))
+                .flatMap(settlementMade -> ServerResponse
+                        .status(HttpStatus.OK)
+                        .bodyValue(SettlementDTO.fromDomain(settlementMade)))
                 .onErrorResume(exception -> ServerResponse
                         .unprocessableEntity()
                         .bodyValue(
