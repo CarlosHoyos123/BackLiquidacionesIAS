@@ -28,12 +28,10 @@ public class EmployeeUseCase {
     }
 
     public Flux<Employee> findEmployeeByName(String name){
-        System.out.println(name);
       return employeeRepository.findByName(name);
     }
 
     public Mono<Employee> findEmployeeByDocument(String document){
-        System.out.println(document);
         return employeeRepository.findByDocument(document);
     }
 

@@ -110,7 +110,10 @@ public class Handler {
                 .onErrorResume(exception -> ServerResponse
                         .unprocessableEntity()
                         .bodyValue(
-                                new ExceptionDTO(HttpStatus.NOT_MODIFIED.value(), exception.getMessage())));
+                                new ExceptionDTO(HttpStatus.NOT_MODIFIED.value(), exception.getMessage())))
+                .switchIfEmpty(ServerResponse
+                        .notFound()
+                        .build());
     }
 
 }

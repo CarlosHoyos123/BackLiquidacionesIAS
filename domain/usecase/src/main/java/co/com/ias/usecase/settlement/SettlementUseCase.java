@@ -8,6 +8,8 @@ import co.com.ias.model.settlement.Settlement;
 import co.com.ias.model.settlement.values.*;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
+
+import java.beans.JavaBean;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
@@ -18,64 +20,95 @@ public class SettlementUseCase {
     private final EmployeeRepository employeeRepository;
 
     public Mono<Settlement> MadeSettlement (Settlement settlement) {
-        Mono<Employee> monoEmployee = employeeConfirm(settlement.getEmployee().getIdnumber().getValue());
-
-        return monoEmployee.flatMap(employee -> {
+        Employee employeeInDB = new Employee(
+                new IdEmployee(settlement.getEmployee().getId().getValue()),
+                new Idnumber(settlement.getEmployee().getIdnumber().getValue()),
+                new Name(settlement.getEmployee().getName().getValue()),
+                new Indate(settlement.getEmployee().getIndate().getValue()),
+                new Cargo(settlement.getEmployee().getCargo().getValue()),
+                new Salary(settlement.getEmployee().getSalary().getValue()));
+        Settlement response =
                 Settlement.builder()
-                    .employee(new Employee(
-                            new IdEmployee(employee.getId().getValue()),
-                            new Idnumber(employee.getIdnumber().getValue()),
-                            new Name(employee.getName().getValue()),
-                            new Indate(employee.getIndate().getValue()),
-                            new Cargo(employee.getCargo().getValue()),
-                            new Salary(employee.getSalary().getValue())))
-                    .transportApply(transportSupportApply(settlement))
-                    .transportSupport(TransportSupportValue(settlement))
-                    .withdrawalDate(new WithdrawalDate(settlement.getWithdrawalDate().getValue()))
-                    .withdrawalReason(new WithdrawalReason(settlement.getWithdrawalReason().getValue()))
-                    .workedTotalDays(workedDays(settlement))
-                    .workedDaysLastYear(workedDaysInLastYear(settlement))
-                    .workedDaysLastHalfYear(workedDaysInLastHalfYear(settlement))
-                    .vacationDays(vacationsAmount(settlement))
-                    .baseSalary(baseSalarymount(settlement))
-                    .cesatias(cesatiasAmount(settlement))
-                    .interesesCesantias(interesesCesantiasAmount(settlement))
-                    .primaServicio(primaServicioAmount(settlement))
-                    .nomina(nominaAmount(settlement))
-                    .liquidacion(liquidacionAmount(settlement))
-                    .bono(bonoAmount(settlement))
-                .build();
-                return Mono.just(settlement);
-        });
+                        .employee(new Employee(
+                                new IdEmployee(settlement.getEmployee().getId().getValue()),
+                                new Idnumber(settlement.getEmployee().getIdnumber().getValue()),
+                                new Name(settlement.getEmployee().getName().getValue()),
+                                new Indate(settlement.getEmployee().getIndate().getValue()),
+                                new Cargo(settlement.getEmployee().getCargo().getValue()),
+                                new Salary(settlement.getEmployee().getSalary().getValue())))
+                        .transportApply(transportSupportApply(employeeInDB.getSalary().getValue()))
+                        .transportSupport(TransportSupportValue(employeeInDB.getSalary().getValue()))
+                        .baseSalary(baseSalarymount(employeeInDB.getSalary().getValue(),TransportSupportValue(employeeInDB.getSalary().getValue()).getValue()))
+                        .withdrawalDate(new WithdrawalDate(settlement.getWithdrawalDate().getValue()))
+                        .withdrawalReason(new WithdrawalReason(settlement.getWithdrawalReason().getValue()))
+                        .workedTotalDays(workedDays(settlement))
+                        .workedDaysLastYear(workedDaysInLastYear(settlement))
+                        .workedDaysLastHalfYear(workedDaysInLastHalfYear(settlement))
+                        .vacationDays(vacationsAmount(
+                                baseSalarymount(employeeInDB.getSalary().getValue(),TransportSupportValue(employeeInDB.getSalary().getValue()).getValue()).getValue(),
+                                workedDays(settlement).getValue()))
+                        .cesatias(cesatiasAmount(
+                                baseSalarymount(employeeInDB.getSalary().getValue(),TransportSupportValue(employeeInDB.getSalary().getValue()).getValue()).getValue(),
+                                workedDays(settlement).getValue()
+                        ))
+                        .interesesCesantias(interesesCesantiasAmount(
+                                cesatiasAmount(
+                                        baseSalarymount(employeeInDB.getSalary().getValue(),TransportSupportValue(employeeInDB.getSalary().getValue()).getValue()).getValue(),
+                                        workedDays(settlement).getValue()).getValue(),
+                                        workedDaysInLastYear(settlement).getValue()
+                        ))
+                        .primaServicio(primaServicioAmount(baseSalarymount(employeeInDB.getSalary().getValue(),TransportSupportValue(employeeInDB.getSalary().getValue()).getValue()).getValue(),
+                                        workedDaysInLastHalfYear(settlement).getValue()))
+                        .nomina(nominaAmount(settlement))
+                        .liquidacion(liquidacionAmount(settlement))
+                        .bono(bonoAmount(settlement,
+                                baseSalarymount(employeeInDB.getSalary().getValue(),TransportSupportValue(employeeInDB.getSalary().getValue()).getValue()).getValue()))
+                        .build();
+
+        return Mono.just(response);
     }
 
-    private Bono bonoAmount(Settlement settlement) {
+    public InteresesCesantias interesesCesantiasAmount(Float cesantias, int days){
+
+        return new InteresesCesantias((float) (cesantias*(days*(0.12/360))));
+    }
+
+    public Cesantias cesatiasAmount(Float baseSalary,int days){
+        return new Cesantias(baseSalary*days/360);
+    }
+
+    public  VacationDays vacationsAmount(Float baseSalary,int days){;
+        return new VacationDays(baseSalary*days/720);
+    }
+
+    public BaseSalary baseSalarymount(Float salary, Float transportValue){
+        return new BaseSalary(salary+transportValue);
+    }
+
+
+    private Bono bonoAmount(Settlement settlement, Float baseSalary) {
         if (settlement.getWithdrawalReason().getValue().toLowerCase().equals("injustificado")){
-
+            return new Bono(baseSalary);
         }
-        return null;
-    }
-
-    public  VacationDays vacationsAmount(Settlement settlement){
-        Float salary = settlement.getBaseSalary().getValue();
-        int days = settlement.getWorkedTotalDays().getValue();
-        return new VacationDays(salary*(days/720));
-    }
-
-    public Mono<Employee> employeeConfirm(String id) throws NullPointerException{
-        Mono<Employee> employee =  employeeRepository.findByIdnumber(id);
-        if (employee == null) {
-            throw new NullPointerException("El empleado no existe");
+        else {
+            return  new Bono(0F);
         }
-        return employee;
     }
-    public TransportApply transportSupportApply(Settlement settlement){
-        if (settlement.getEmployee().getSalary().getValue() > Constants.getDeadLineForTransSupport())
+
+    public void employeeConfirm(Settlement settlement) throws ClassNotFoundException{
+        employeeRepository.findByDocument(settlement.getEmployee().getIdnumber().getValue());
+    }
+    public TransportApply transportSupportApply(Float salary){
+        if (salary < Constants.getDeadLineForTransSupport()){
             return new TransportApply(true);
+        }
         return new TransportApply(false);
     }
-    public TransportSupport TransportSupportValue(Settlement settlement){
-        return (settlement.getTransportApply().getValue() == true)? new TransportSupport(Constants.getTransSupportValue()):new TransportSupport(0);
+    public TransportSupport TransportSupportValue(Float salary){
+        if (salary < Constants.getDeadLineForTransSupport()) {
+            return new TransportSupport(Constants.getTransSupportValue());
+        }
+        return new TransportSupport(0);
     }
 
     public WorkedTotalDays workedDays(Settlement settlement){
@@ -84,52 +117,48 @@ public class SettlementUseCase {
     }
 
     public WorkedDaysLastYear workedDaysInLastYear(Settlement settlement){
-        return new WorkedDaysLastYear((int) ChronoUnit.DAYS.between(LocalDate.now().with(TemporalAdjusters.firstDayOfYear()),
+        LocalDate initialDate;
+        if (settlement.getEmployee().getIndate().getValue().isAfter(settlement.getWithdrawalDate().getValue().with(TemporalAdjusters.firstDayOfYear()))) {
+            initialDate = settlement.getEmployee().getIndate().getValue();
+        } else {
+            initialDate = settlement.getWithdrawalDate().getValue().with(TemporalAdjusters.firstDayOfYear());
+        };
+        return new WorkedDaysLastYear((int) ChronoUnit.DAYS.between(initialDate,
                                                                     settlement.getWithdrawalDate().getValue()));
     }
 
     public WorkedDaysLastHalfYear workedDaysInLastHalfYear(Settlement settlement){
+        LocalDate firstDayYear = settlement.getWithdrawalDate().getValue().with(TemporalAdjusters.firstDayOfYear());
+        LocalDate midYear = LocalDate.of(2015,07,01) ;
+        LocalDate initialDate;
 
-        if (LocalDate.now().isBefore(LocalDate.of(2023,07,01))) {
+        if (settlement.getEmployee().getIndate().getValue().isAfter(settlement.getWithdrawalDate().getValue().with(TemporalAdjusters.firstDayOfYear()))) {
+            initialDate = settlement.getEmployee().getIndate().getValue();
+        } else {
+            initialDate = settlement.getWithdrawalDate().getValue().with(TemporalAdjusters.firstDayOfYear());
+        };
+
+        if (settlement.getWithdrawalDate().getValue().isBefore(midYear)) {
             return new WorkedDaysLastHalfYear((int) ChronoUnit.DAYS.between(
-                                                    LocalDate.of(2023,01,01),
+                                                    initialDate,
                                                     settlement.getWithdrawalDate().getValue()));
         } else {
             return new WorkedDaysLastHalfYear((int) ChronoUnit.DAYS.between(
-                                                    LocalDate.of(2023,07,01),
+                                                    midYear,
                                                     settlement.getWithdrawalDate().getValue()));
         }
     }
 
-    public BaseSalary baseSalarymount(Settlement settlement){
-        Float salary = settlement.getEmployee().getSalary().getValue()+settlement.getTransportSupport().getValue();
-        return new BaseSalary(salary);
-    }
-
-    public Cesantias cesatiasAmount(Settlement settlement){
-        Float salary = settlement.getBaseSalary().getValue();
-        int dias = settlement.getWorkedTotalDays().getValue();
-        return new Cesantias(salary*(dias/360));
-    }
-
-    public InteresesCesantias interesesCesantiasAmount(Settlement settlement){
-        Float cesantias = settlement.getCesatias().getValue();
-        int dias = settlement.getWorkedTotalDays().getValue();
-        return new InteresesCesantias((float) (cesantias*(dias*(0.12/360))));
-    }
-
-    public PrimaServicio primaServicioAmount(Settlement settlement){
-        float salary = settlement.getBaseSalary().getValue();
-        int dias = settlement.getWorkedDaysLastHalfYear().getValue();
-        return  new PrimaServicio(salary*(dias/360));
+    public PrimaServicio primaServicioAmount(Float basesalary, int days){
+        return  new PrimaServicio(basesalary*days/360);
     }
 
     public Nomina nominaAmount(Settlement settlement){
-        return null;
+        return new Nomina(0F);
     }
 
     public Liquidacion liquidacionAmount(Settlement settlement){
-        return  null;
+        return  new Liquidacion(0F);
     }
 
 

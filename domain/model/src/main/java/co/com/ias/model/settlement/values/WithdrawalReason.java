@@ -10,7 +10,7 @@ public class WithdrawalReason {
     }
 
     public String getValue() {
-        return value;
+        return value.toLowerCase();
     }
 
     public void validation(String value) throws IllegalArgumentException{

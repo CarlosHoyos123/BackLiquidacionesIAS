@@ -16,4 +16,12 @@ public class ExceptionAdvice {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(response);
     }/* return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);*/
+
+    @ExceptionHandler(ClassNotFoundException.class)
+    public ResponseEntity<ExceptionDTO> IllegalArgument(ClassNotFoundException exception) {
+        ExceptionDTO response = new ExceptionDTO(HttpStatus.NOT_FOUND.value(), exception.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(response);
+    }/* return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);*/
 }
