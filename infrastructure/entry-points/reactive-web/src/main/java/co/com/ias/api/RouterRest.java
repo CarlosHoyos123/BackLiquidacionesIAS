@@ -27,7 +27,8 @@ public class RouterRest {
                 .andRoute(POST("/api/user/settlement"), handler::getSettlement)
                 .andRoute(GET("/api/user/salaryUpdates".concat(paramid)),handler::salarysUpdates)
                 .andRoute(GET("/api/users".concat(paramName)),handler::getEmployeeByName)
-                .andRoute(GET("/api/user".concat(paramdoc)),handler::getEmployeesByDoc);
+                .andRoute(GET("/api/user".concat(paramdoc)),handler::getEmployeesByDoc)
+                .andRoute(GET("/error"),handler::getError);
     }
 
     @Bean

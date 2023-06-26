@@ -4,6 +4,7 @@ import co.com.ias.model.employee.Employee;
 import co.com.ias.model.employee.gateways.EmployeeRepository;
 import co.com.ias.model.salarylog.SalaryLog;
 import co.com.ias.model.salarylog.gateways.SalaryLogRepository;
+import co.com.ias.usecase.Exceptions.NotFoundEmployee;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -18,24 +19,25 @@ public class EmployeeUseCase {
     };
 
     public Mono<Employee> findEmployee(String id){
-        return  employeeRepository.findByIdnumber(id);
+        return  employeeRepository.findByIdnumber(id)
+                .switchIfEmpty(Mono.error(new NotFoundEmployee("Id no valido")));
     }
 
     public Flux<Employee> findEmployeesByPage(int page, int size) throws IllegalArgumentException{
         int DBoffset = (size * (page-1));
-        Flux<Employee> list = employeeRepository.findAllByPage(DBoffset, size);
-        return list;
+        return employeeRepository.findAllByPage(DBoffset, size).
+                switchIfEmpty(Mono.error(new NotFoundEmployee("cero resultados")));
     }
 
     public Flux<Employee> findEmployeeByName(String name){
-      return employeeRepository.findByName(name);
+        return employeeRepository.findByName(name).
+                switchIfEmpty(Mono.error(new NotFoundEmployee("No existen empleados con ese nombre")));
     }
 
     public Mono<Employee> findEmployeeByDocument(String document){
-        return employeeRepository.findByDocument(document);
+        return  employeeRepository.findByDocument(document).
+                switchIfEmpty(Mono.error(new NotFoundEmployee("En documento no existe")));
     }
-
-
 
     public Mono<Employee> saveEmployee(Employee employee){
         return employeeRepository.saveEmployee(employee);

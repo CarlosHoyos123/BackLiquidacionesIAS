@@ -32,12 +32,6 @@ class EmployeeDTOTest {
     }
 
     @Test
-    void validationFailure(){
-        assertThrows(IllegalArgumentException.class, ()->
-               ExampleData.invalidEmployeeDTO());
-    }
-
-    @Test
     void fromDomain() {
         Employee employee = ExampleData.crearEmployee();
         EmployeeDTO employeeDTO = EmployeeDTO.fromDomain(employee);

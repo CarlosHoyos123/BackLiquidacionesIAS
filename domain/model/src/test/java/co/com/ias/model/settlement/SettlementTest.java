@@ -1,17 +1,8 @@
 package co.com.ias.model.settlement;
 
-import co.com.ias.model.employee.Employee;
-import co.com.ias.model.employee.constants.Constants;
-import co.com.ias.model.employee.values.*;
 import co.com.ias.model.settlement.exampleData.ExampleData;
 import co.com.ias.model.settlement.values.*;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.util.Assert;
-
-import java.time.LocalDate;
-import java.util.Set;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class SettlementTest {

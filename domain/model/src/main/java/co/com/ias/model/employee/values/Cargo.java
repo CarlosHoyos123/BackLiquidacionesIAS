@@ -19,7 +19,7 @@ public class Cargo {
         }else if(value.length() > 30 || value.length() < 10){
             throw new IllegalArgumentException("lenght must be between 10 and 30");
         }else if(Pattern.matches(".*[^a-zA-Z0-9 ].*", value)){
-            throw new IllegalArgumentException("Special characters not allowed.");
+            throw new IllegalArgumentException("Special characters in cargo not allowed.");
         }
     }
 

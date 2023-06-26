@@ -1,5 +1,6 @@
 package co.com.ias.api.entitysDTO;
 
+import co.com.ias.api.exception.Personalized.EmployeeUnvalid;
 import co.com.ias.model.employee.Employee;
 import co.com.ias.model.employee.values.*;
 import jakarta.validation.constraints.*;
@@ -25,7 +26,7 @@ import java.time.LocalDate;
                         no superior a 7 millones    *
                         no vacio                    * */
 
-public class EmployeeDTO {
+public class EmployeeDTO  {
     private Long id;
     @Size(min = 7, max = 15, message = "Documento debe contener entre 7 y 15 digitos")
     @NotEmpty
@@ -70,13 +71,13 @@ public class EmployeeDTO {
     public EmployeeDTO() {
     }
 
-    public EmployeeDTO(Long id, String idnumber, String name, LocalDate indate, String cargo, Float salary) throws IllegalArgumentException{
-        this.id = id;
-        this.idnumber = idnumber;
-        this.name = name;
-        this.indate = indate;
-        this.cargo = cargo;
-        this.salary = salary;
+    public EmployeeDTO(Long id, String idnumber, String name, LocalDate indate, String cargo, Float salary){
+            this.id = id;
+            this.idnumber = idnumber;
+            this.name = name;
+            this.indate = indate;
+            this.cargo = cargo;
+            this.salary = salary;
     }
 
     public Employee toDomain(){
@@ -89,7 +90,7 @@ public class EmployeeDTO {
                 new Salary(salary));
     }
 
-    public static EmployeeDTO fromDomain(Employee employee){
+    public static EmployeeDTO fromDomain(Employee employee) {
         return new EmployeeDTO( employee.getId().getValue(),
                                 employee.getIdnumber().getValue(),
                                 employee.getName().getValue(),
