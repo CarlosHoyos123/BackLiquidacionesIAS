@@ -23,6 +23,7 @@ public interface MyReactiveRepository extends ReactiveCrudRepository<EmployeeDBO
 
     @Query("select * from tblemployee t where name = :name")
     Flux<EmployeeDBO> findByName(String name);
+
     @Query("select * from tblemployee t where idnumber = :document")
     Mono<EmployeeDBO> findByDocument(String document);
 

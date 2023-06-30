@@ -10,7 +10,7 @@ class SettlementTest {
     @Test
     void testToString() {
         //GIVEN
-        Settlement settlement = ExampleData.crearSettlement();
+        Settlement settlement = ExampleData.crearSettlementUsingBuilder();
         //WHEN
         settlement.setTransportApply(new TransportApply(false));
         settlement.toString();

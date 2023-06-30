@@ -2,14 +2,9 @@ package co.com.ias.api;
 
 import co.com.ias.api.entitysDTO.EmployeeDTO;
 import co.com.ias.api.entitysDTO.SettlementDTO;
-import co.com.ias.api.exception.Personalized.EmployeeUnvalid;
-import co.com.ias.api.exception.Personalized.SettlementDateInvalid;
-import co.com.ias.api.exception.Personalized.SettlementUnvalid;
 import co.com.ias.api.exceptions.ExceptionDTO;
-import co.com.ias.model.employee.Employee;
-import co.com.ias.model.salarylog.SalaryLog;
 import co.com.ias.usecase.Exceptions.InvalidPeriodDate;
-import co.com.ias.usecase.Exceptions.NotFoundEmployee;
+import co.com.ias.usecase.Exceptions.SqlNotHigher;
 import co.com.ias.usecase.salarylog.SalaryLogUseCase;
 import co.com.ias.usecase.settlement.SettlementUseCase;
 import lombok.RequiredArgsConstructor;
@@ -17,11 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import co.com.ias.usecase.employee.EmployeeUseCase;
 
-import java.util.function.Predicate;
+import java.sql.SQLNonTransientException;
 
 @Component
 @RequiredArgsConstructor
@@ -48,19 +42,15 @@ public class Handler {
                 .collectList()
                 .flatMap(employeesList -> ServerResponse
                         .status(HttpStatus.OK)
-                        .bodyValue(employeesList))
-                .onErrorResume(exception -> ServerResponse
-                        .unprocessableEntity()
-                        .bodyValue(
-                                new ExceptionDTO(HttpStatus.NO_CONTENT.value(), exception.getMessage())));
+                        .bodyValue(employeesList));
     }
 
     public Mono<ServerResponse> getEmployeeByName(ServerRequest serverRequest) {
-        return employeeUseCase.findEmployeeByName(
-                serverRequest.pathVariable("name"))
-                    .collectList().flatMap(employeeList -> ServerResponse
+        try{return employeeUseCase.findEmployeeByName(serverRequest.pathVariable("name"))
+                .collectList().flatMap(employeeList -> ServerResponse
                         .status(HttpStatus.OK)
-                        .bodyValue(employeeList));
+                        .bodyValue(employeeList));}
+            catch (Exception exception){return Mono.error(exception);}
     }
 
     public Mono<ServerResponse> getEmployeesByDoc(ServerRequest serverRequest) {
@@ -77,11 +67,10 @@ public class Handler {
         return serverRequest.bodyToMono(EmployeeDTO.class)
                 .flatMap(EmployeeDTO -> {
                     try{return employeeUseCase.saveEmployee(EmployeeDTO.toDomain());}
-                    catch (Exception exception)
-                    {return Mono.error(exception);}
+                    catch (IllegalArgumentException exception){return Mono.error(exception);}
                 })
                 .flatMap(userSaved -> ServerResponse
-                        .status(HttpStatus.OK)
+                        .status(HttpStatus.CREATED)
                         .bodyValue(EmployeeDTO.fromDomain(userSaved)));
     }
 
@@ -89,8 +78,7 @@ public class Handler {
         return serverRequest.bodyToMono(EmployeeDTO.class)
                 .flatMap(employeeDTO -> {
                         try{return employeeUseCase.updateSalary(employeeDTO.toDomain());}
-                        catch (Exception exception)
-                        {return Mono.error(exception);}
+                        catch (SQLNonTransientException exception){return Mono.error(exception);}
                 })
                 .flatMap(employeeSalaryUpdated -> ServerResponse
                         .status(HttpStatus.ACCEPTED)
@@ -101,8 +89,8 @@ public class Handler {
         return serverRequest.bodyToMono(SettlementDTO.class)
                     .flatMap(settlement -> {
                         try {return settlementUseCase.MadeSettlement(settlement.toDomain());}
-                        catch (InvalidPeriodDate  exception)
-                            {return Mono.error(exception);}
+                        catch (InvalidPeriodDate  exception){return Mono.error(exception);}
+                        catch (IllegalArgumentException  IllegalArgument){return Mono.error(IllegalArgument);}
                     })
                     .flatMap(settlementMade -> ServerResponse
                                     .status(HttpStatus.OK)

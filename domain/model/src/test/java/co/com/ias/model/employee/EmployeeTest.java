@@ -5,6 +5,7 @@ import co.com.ias.model.employee.values.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.Assert;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
 
@@ -29,4 +30,45 @@ class EmployeeTest {
         //then
         employee.toString();
         }
+
+    @Test
+    public void IllegalExceptionsbyShortId(){
+        //THEN
+        assertThrows(IllegalArgumentException.class, () ->{
+            Employee respone = new Employee(
+                    new IdEmployee(3L),
+                    new Idnumber("284389"),
+                    new Name("Carlos"),
+                    new Indate(LocalDate.of(2015,01,05)),
+                    new Cargo("ingeniero de software"),
+                    new Salary(2000000F));
+        });
+    }
+
+    @Test
+    public void IllegalExceptionsByPriorDate(){
+        //THEN
+        assertThrows(IllegalArgumentException.class, () ->{
+            Employee respone = new Employee(
+                    new IdEmployee(3L),
+                    new Idnumber("28434589"),
+                    new Name("Carlos"),
+                    new Indate(LocalDate.of(2014,01,05)),
+                    new Cargo("ingeniero de software"),
+                    new Salary(2000000F));
+        });
+    }
+    @Test
+    public void IllegalExceptionsByLowSalary(){
+        //THEN
+        assertThrows(IllegalArgumentException.class, () ->{
+            Employee respone = new Employee(
+                    new IdEmployee(3L),
+                    new Idnumber("28434589"),
+                    new Name("Carlos"),
+                    new Indate(LocalDate.of(2014,01,05)),
+                    new Cargo("ingeniero de software"),
+                    new Salary(2000000F));
+        });
+    }
 }

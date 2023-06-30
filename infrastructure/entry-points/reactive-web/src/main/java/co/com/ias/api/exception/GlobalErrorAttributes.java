@@ -3,8 +3,10 @@ package co.com.ias.api.exception;
 import co.com.ias.api.exception.Personalized.SettlementDateInvalid;
 import co.com.ias.api.exception.enums.ErrorAttributesEnums;
 import co.com.ias.api.exception.Personalized.PeriodDateNoValid;
+import co.com.ias.usecase.Exceptions.EmptyList;
 import co.com.ias.usecase.Exceptions.InvalidPeriodDate;
 import co.com.ias.usecase.Exceptions.NotFoundEmployee;
+import co.com.ias.usecase.Exceptions.SqlNotHigher;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.reactive.error.DefaultErrorAttributes;
 import org.springframework.core.annotation.MergedAnnotations;
@@ -15,6 +17,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.*;
 
 
+import java.sql.SQLNonTransientException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -33,7 +36,10 @@ public class GlobalErrorAttributes extends DefaultErrorAttributes {
                 new ExceptionRule(InvalidPeriodDate.class, HttpStatus.NOT_ACCEPTABLE),
                 new ExceptionRule(SettlementDateInvalid.class, HttpStatus.NOT_ACCEPTABLE),
                 new ExceptionRule(IllegalArgumentException.class, HttpStatus.NOT_ACCEPTABLE),
-                new ExceptionRule(NotFoundEmployee.class, HttpStatus.NOT_FOUND)
+                new ExceptionRule(NotFoundEmployee.class, HttpStatus.NO_CONTENT),
+                new ExceptionRule(EmptyList.class, HttpStatus.NO_CONTENT),
+                new ExceptionRule(SqlNotHigher.class, HttpStatus.NOT_EXTENDED),
+                new ExceptionRule(SQLNonTransientException.class, HttpStatus.NOT_ACCEPTABLE)
     );
 
     @Override

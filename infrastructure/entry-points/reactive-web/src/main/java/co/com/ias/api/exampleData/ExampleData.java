@@ -78,8 +78,8 @@ public class ExampleData {
     public static List<EmployeeDTO> employeeList(){
         return Arrays.asList(crearEmployeeDTO(),crearEmployeeDTO());
     }
-    public static Flux<EmployeeDTO> crearFluxEmployee(){
-        return Flux.just(crearEmployeeDTO());
+    public static Flux<Employee> crearFluxEmployee(){
+        return Flux.just(crearEmployee());
     }
     public static Mono<EmployeeDTO> crearMonoEmployeeDTO(){
         return Mono.just(crearEmployeeDTO());

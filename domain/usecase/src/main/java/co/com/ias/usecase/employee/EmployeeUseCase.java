@@ -2,12 +2,14 @@ package co.com.ias.usecase.employee;
 
 import co.com.ias.model.employee.Employee;
 import co.com.ias.model.employee.gateways.EmployeeRepository;
-import co.com.ias.model.salarylog.SalaryLog;
-import co.com.ias.model.salarylog.gateways.SalaryLogRepository;
+import co.com.ias.usecase.Exceptions.EmptyList;
 import co.com.ias.usecase.Exceptions.NotFoundEmployee;
+import co.com.ias.usecase.Exceptions.SqlNotHigher;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.sql.SQLNonTransientException;
 
 @RequiredArgsConstructor
 public class EmployeeUseCase {
@@ -23,10 +25,10 @@ public class EmployeeUseCase {
                 .switchIfEmpty(Mono.error(new NotFoundEmployee("Id no valido")));
     }
 
-    public Flux<Employee> findEmployeesByPage(int page, int size) throws IllegalArgumentException{
+    public Flux<Employee> findEmployeesByPage(int page, int size) {
         int DBoffset = (size * (page-1));
         return employeeRepository.findAllByPage(DBoffset, size).
-                switchIfEmpty(Mono.error(new NotFoundEmployee("cero resultados")));
+                switchIfEmpty(Mono.error(new EmptyList("cero empleados encontrados")));
     }
 
     public Flux<Employee> findEmployeeByName(String name){
@@ -39,11 +41,11 @@ public class EmployeeUseCase {
                 switchIfEmpty(Mono.error(new NotFoundEmployee("En documento no existe")));
     }
 
-    public Mono<Employee> saveEmployee(Employee employee){
+    public Mono<Employee> saveEmployee(Employee employee) throws IllegalArgumentException{
         return employeeRepository.saveEmployee(employee);
     };
 
-    public Mono<Employee> updateSalary(Employee employee){
-        return employeeRepository.updateSalary(employee);
+    public Mono<Employee> updateSalary(Employee employee) throws SQLNonTransientException {
+            return employeeRepository.updateSalary(employee);
     }
 }

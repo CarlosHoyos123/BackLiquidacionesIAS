@@ -71,8 +71,7 @@ public class SettlementUseCase {
     }
 
     public InteresesCesantias interesesCesantiasAmount(Float cesantias, int days){
-
-        return new InteresesCesantias((float) (cesantias*(days*(0.12/360))));
+        return new InteresesCesantias((float) ((cesantias*days*0.12)/360));
     }
 
     public Cesantias cesatiasAmount(Float baseSalary,int days){
@@ -97,10 +96,6 @@ public class SettlementUseCase {
         }
     }
 
-    public Mono<Employee> employeeConfirm(Settlement settlement) {
-        return employeeRepository.findByDocument(settlement.getEmployee().getIdnumber().getValue())
-                .switchIfEmpty(Mono.error(new NotFoundEmployee("El empleado no existe.")));
-    }
     public TransportApply transportSupportApply(Float salary){
         if (salary < Constants.getDeadLineForTransSupport()){
             return new TransportApply(true);
@@ -120,29 +115,32 @@ public class SettlementUseCase {
         }
         return new WorkedTotalDays((int) ChronoUnit.DAYS.between(settlement.getEmployee().getIndate().getValue(),
                                                                  settlement.getWithdrawalDate().getValue()));
-
     }
 
     public WorkedDaysLastYear workedDaysInLastYear(Settlement settlement){
         LocalDate initialDate;
-        if (settlement.getEmployee().getIndate().getValue().isAfter(settlement.getWithdrawalDate().getValue().with(TemporalAdjusters.firstDayOfYear()))) {
-            initialDate = settlement.getEmployee().getIndate().getValue();
-        } else {
-            initialDate = settlement.getWithdrawalDate().getValue().with(TemporalAdjusters.firstDayOfYear());
-        };
-        return new WorkedDaysLastYear((int) ChronoUnit.DAYS.between(initialDate,
-                                                                    settlement.getWithdrawalDate().getValue()));
+        if (settlement.getEmployee().getIndate().getValue().
+                isAfter(settlement.getWithdrawalDate().getValue().with(TemporalAdjusters.firstDayOfYear()))) {
+                    initialDate = settlement.getEmployee().getIndate().getValue();
+                    return new WorkedDaysLastYear((int) ChronoUnit.DAYS.between(initialDate,
+                                                                        settlement.getWithdrawalDate().getValue()));
+                } else {
+                    initialDate = settlement.getWithdrawalDate().getValue().with(TemporalAdjusters.firstDayOfYear());
+                    return new WorkedDaysLastYear((int) ChronoUnit.DAYS.between(initialDate,
+                            settlement.getWithdrawalDate().getValue()));
+                }
     }
 
     public WorkedDaysLastHalfYear workedDaysInLastHalfYear(Settlement settlement){
         LocalDate firstDayYear = settlement.getWithdrawalDate().getValue().with(TemporalAdjusters.firstDayOfYear());
-        LocalDate midYear = LocalDate.of(2015,07,01) ;
+        LocalDate midYear = LocalDate.of(2015,07,01);
+        LocalDate contractDate = settlement.getEmployee().getIndate().getValue();
         LocalDate initialDate;
 
-        if (settlement.getEmployee().getIndate().getValue().isAfter(settlement.getWithdrawalDate().getValue().with(TemporalAdjusters.firstDayOfYear()))) {
-            initialDate = settlement.getEmployee().getIndate().getValue();
+        if (contractDate.isAfter(firstDayYear)) {
+            initialDate =contractDate;
         } else {
-            initialDate = settlement.getWithdrawalDate().getValue().with(TemporalAdjusters.firstDayOfYear());
+            initialDate = firstDayYear;
         };
 
         if (settlement.getWithdrawalDate().getValue().isBefore(midYear)) {

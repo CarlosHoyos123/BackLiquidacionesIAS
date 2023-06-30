@@ -3,6 +3,7 @@ package co.com.ias.model.employee.exampleData;
 import co.com.ias.model.employee.Employee;
 import co.com.ias.model.employee.values.*;
 import co.com.ias.model.settlement.Settlement;
+import reactor.core.publisher.Flux;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -20,7 +21,7 @@ public class ExampleData {
                     new Salary(2000000F));
     }
 
-    public static List employeesList(){
-        return Arrays.asList(crearEmployee(),crearEmployee());
+    public static Flux<Employee> FluxEmployees(){
+        return Flux.just(crearEmployee());
     }
 }

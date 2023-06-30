@@ -13,6 +13,7 @@ import reactor.core.publisher.Mono;
 import static co.com.ias.r2dbc.exampleData.ExampleData.crearEmployee;
 import static co.com.ias.r2dbc.exampleData.ExampleData.crearEmployeeDBO;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 class MyReactiveRepositoryAdapterTest {
@@ -32,10 +33,32 @@ class MyReactiveRepositoryAdapterTest {
         //then
         assertNotNull(resp);
     }
+
+    @Test
+    void findByEmployeeidTest (){
+/*        //GIVEN
+            Mockito.when(repository.findAll()).thenReturn(ExampleData.crearFluxEmployeeDBO());
+        //WHEN
+            Flux<EmployeeDBO> response = adapter.findAll();
+        //THEN
+            response.subscribe(emp -> {
+                assertEquals(emp.getCargo(),"ingeniero de soft");
+            });*/
+    }
+
+    @Test
+    void findByNameTest (){
+
+    }
+
+    @Test
+    void findByDocumentTest (){
+
+    }
     @Test
     void findByIdnumber(){
         //given
-        Mockito.when(repository.findByIdnumber("12345678")).thenReturn(ExampleData.crearMonoEmployeeDBO());
+        Mockito.when(repository.findByIdnumber(anyString())).thenReturn(ExampleData.crearMonoEmployeeDBO());
         //when
         Mono<Employee> response = adapter.findByIdnumber("12345678");
         //then
@@ -45,7 +68,7 @@ class MyReactiveRepositoryAdapterTest {
     @Test
     void findAllByPage(){
         //given
-        Mockito.when(repository.findAll(10,5)).thenReturn(ExampleData.crearFluxEmployeeDBO());
+        Mockito.when(repository.findAll(anyInt(),anyInt())).thenReturn(ExampleData.crearFluxEmployeeDBO());
         //when
         Flux<Employee> response = adapter.findAllByPage(10,5);
         //then
@@ -54,16 +77,17 @@ class MyReactiveRepositoryAdapterTest {
     @Test
     void updateSalary(){
         //given
-        Mockito.when(repository.save(ExampleData.crearEmployeeDBO())).thenReturn(ExampleData.crearMonoEmployeeDBO());
+        Mockito.when(repository.save(any(EmployeeDBO.class))).thenReturn(ExampleData.crearMonoEmployeeDBO());
         //when
         Mono<Employee> response = adapter.saveEmployee(ExampleData.crearEmployee());
         //then
+        response.subscribe(info -> System.out.println(info.toString()));
     }
 
     @Test
     void saveEmployee() {
         //given
-        BDDMockito.given(repository.save(ExampleData.crearEmployeeDBO())).willReturn(ExampleData.crearMonoEmployeeDBO());
+        BDDMockito.given(repository.save(any(EmployeeDBO.class))).willReturn(ExampleData.crearMonoEmployeeDBO());
         //when
         Mono<Employee> resp = adapter.saveEmployee(ExampleData.crearEmployee());
 

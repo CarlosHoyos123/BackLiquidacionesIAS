@@ -10,26 +10,6 @@ import java.time.LocalDate;
 
 public class ExampleData {
 
-    public static Settlement crearSettlement(){
-        return new Settlement(
-                new Employee(new IdEmployee(1l),new Idnumber("12345678"),new Name("Carlos"), new Indate(LocalDate.of(2015,03,05)),new Cargo("Ingeniero biomedico"),new Salary(3000000F)),
-                new TransportApply(true),
-                new TransportSupport(Constants.getTransSupportValue()),
-                new WithdrawalDate(LocalDate.of(2015,01,01)),
-                new WithdrawalReason("voluntario"),
-                new WorkedTotalDays(100),
-                new WorkedDaysLastYear(200),
-                new WorkedDaysLastHalfYear(40),
-                new VacationDays(1000000F),
-                new BaseSalary(Constants.getSMMLV()),
-                new Cesantias(0F),
-                new InteresesCesantias(0F),
-                new PrimaServicio(0F),
-                new Nomina(0F),
-                new Liquidacion(0F),
-                new Bono(0F)
-        );
-    }
     public static Settlement crearSettlementUsingBuilder(){
         return Settlement.builder()
                 .employee(new Employee(
@@ -41,7 +21,7 @@ public class ExampleData {
                         new Salary(2000000F)))
                 .transportApply(new TransportApply(true))
                 .transportSupport(new TransportSupport(Constants.getTransSupportValue()))
-                .withdrawalDate(new WithdrawalDate(LocalDate.of(2015,01,01)))
+                .withdrawalDate(new WithdrawalDate(LocalDate.of(2015,02,02)))
                 .withdrawalReason(new WithdrawalReason("voluntario"))
                 .workedTotalDays(new WorkedTotalDays(100))
                 .workedDaysLastYear(new WorkedDaysLastYear(200))
